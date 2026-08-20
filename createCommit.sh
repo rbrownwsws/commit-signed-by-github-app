@@ -82,6 +82,6 @@ response=$(curl \
   --data "@${query_file}" \
   "${GITHUB_GRAPHQL_URL}")
 
-commit_oid=$(jq -r '.data.createCommitOnBranch.commit.oid' "${response}")
+commit_oid=$(jq -r '.data.createCommitOnBranch.commit.oid' <<<"${response}")
 
 echo "commit-oid=${commit_oid}" >> "${GITHUB_OUTPUT}"
