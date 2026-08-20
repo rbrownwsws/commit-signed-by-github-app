@@ -14,6 +14,9 @@ trap 'rm -rf "${tmpdir}"' EXIT
 additions_file="${tmpdir}/additions.jsonl"
 deletions_file="${tmpdir}/deletions.jsonl"
 
+touch "${additions_file}"
+touch "${deletions_file}"
+
 line=0
 while IFS='' read -r -d '' status; do
   IFS='' read -r -d '' path || {
