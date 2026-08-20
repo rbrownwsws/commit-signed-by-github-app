@@ -1,0 +1,43 @@
+# $schema=https://www.schemastore.org/github-action.json
+
+name: GitHub App Signed Commit
+description: Make a git commit signed as a GitHub App using the GitHub GraphQL API
+
+inputs:
+  commit-message:
+    description: The commit message
+    required: true
+  add-all:
+    description: Whether to add all changed files to the commit
+    required: false
+    default: "false"
+  github-api-token:
+    description: The GitHub API token to use for authentication. (Use an App Installation token)
+    required: true
+
+outputs:
+  commit-oid:
+    description: The OID (SHA) of the commit that was created
+    value: ${{ steps.commit.outputs.commit-oid }}
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Stage all files
+      if: inputs.add-all == 'true'
+      shell: bash
+      run: git add -A
+
+    - name: Commit staged files
+      id: commit
+      shell: bash
+      env:
+        COMMIT_MESSAGE: ${{ inputs.commit-message }}
+        GITHUB_API_TOKEN: ${{ inputs.github-api-token }}
+      run: |
+        set -euo pipefail
+
+        SCRIPT="${GITHUB_ACTION_PATH}/createCommit.sh"
+        chmod +x "${SCRIPT}"
+        "${SCRIPT}"
